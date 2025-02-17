@@ -141,12 +141,19 @@ class TestStreamRunner(unittest.TestCase):
                 **kwargs: Any,
             ) -> Any:
                 assert isinstance(batchdata, tuple)
-                return tuple(default_prepare_batch(b, device, non_blocking, **kwargs) for b in batchdata), None
+                batches=[default_prepare_batch(b, device, non_blocking, **kwargs) for b in batchdata]
+                if isinstance(batches[0], tuple) and len(batches[0])==2:
+                    inputs,outputs=zip(*batches)
+                else:
+                    inputs=tuple(batches)
+                    outputs=(None,)*len(inputs)
+
+                return tuple(inputs),tuple(outputs)
 
         class FakeMultiInputNet(torch.nn.Module):
             def forward(self,x):
                 assert isinstance(x, tuple)
-                assert isinstance(x[0], torch.Tensor), str(x[0])
+                assert isinstance(x[0], torch.Tensor), type(x[0])
                 return torch.as_tensor([i.mean() for i in x])
 
         with self.subTest("Identity Net"):

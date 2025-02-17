@@ -4,10 +4,10 @@ import torch
 
 from ignite.engine import Engine
 
-from monaistream.streamrunners.streamrunner import StreamRunner
-from monaistream.streamrunners.adaptors import StreamingDataLoader, IgniteEngineAdaptor
-from monaistream.streamrunners.gstreamer.subnet import GstStreamRunnerSubnet
-from monaistream.streamrunners.gstreamer.utils import run_pipeline, PadEntry, SubnetEntry
+from monaistream.streamrunner.streamrunner import StreamRunner
+from monaistream.streamrunner.adaptors import StreamingDataLoader, IgniteEngineAdaptor
+from monaistream.streamrunner.gstreamer.subnet import GstStreamRunnerSubnet
+from monaistream.streamrunner.gstreamer.utils import run_pipeline, PadEntry, SubnetEntry
 
 
 

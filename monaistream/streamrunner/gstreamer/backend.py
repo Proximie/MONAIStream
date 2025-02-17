@@ -10,7 +10,7 @@ import numpy as np
 import torch
 
 
-from monaistream.streamrunners.gstreamer.utils import PadEntry
+from monaistream.streamrunner.gstreamer.utils import PadEntry
 
 
 Gst.init(None)

@@ -14,9 +14,8 @@ from typing import Callable
 import torch
 
 from queue import Empty, Queue
-from threading import Thread, RLock
-from monai.transforms import Transform
-from monai.utils.enums import CommonKeys
+from threading import RLock
+
 
 __all__ = ["IterableBufferDataset", "StreamSinkTransform"]
 
@@ -72,19 +71,3 @@ class IterableBufferDataset(torch.utils.data.IterableDataset):
                     pass  # queue was empty this time, try again
         finally:
             self.stop()
-
-
-class StreamSinkTransform(Transform):
-    def __init__(self, result_key: str = CommonKeys.PRED, buffer_size: int = 0, timeout: float = 1.0):
-        super().__init__()
-        self.result_key = result_key
-        self.buffer_size = buffer_size
-        self.timeout = timeout
-        self.queue: Queue = Queue(self.buffer_size)
-
-    def __call__(self, data):
-        self.queue.put(data[self.result_key], timeout=self.timeout)
-        return data
-
-    def get_result(self):
-        return self.queue.get(timeout=self.timeout)

@@ -5,7 +5,7 @@ from ignite.engine.engine import Engine
 import monai
 from monai.engines import Workflow
 
-from monaistream.streamrunners.adaptors import IgniteEngineAdaptor
+from monaistream.streamrunner.adaptors import IgniteEngineAdaptor
 
 
 class TestIgniteEngineAdaptor(unittest.TestCase):

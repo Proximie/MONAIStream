@@ -9,7 +9,7 @@ from gi.repository import Gst, GLib, GObject, GstBase
 
 import numpy as np
 
-from monaistream.streamrunners.gstreamer.utils import (
+from monaistream.streamrunner.gstreamer.utils import (
     create_registerable_plugin,
     register,
     run_pipeline
@@ -19,8 +19,8 @@ from monaistream.streamrunners.gstreamer.utils import (
 Gst.init()
 
 
-from monaistream.streamrunners.gstreamer.backend import GstStreamRunnerBackend, GstStreamRunnerBackendStatic
-from monaistream.streamrunners.gstreamer.utils import PadEntry
+from monaistream.streamrunner.gstreamer.backend import GstStreamRunnerBackend, GstStreamRunnerBackendStatic
+from monaistream.streamrunner.gstreamer.utils import PadEntry
 
 
 FORMATS = "{RGBx,BGRx,xRGB,xBGR,RGBA,BGRA,ARGB,ABGR,RGB,BGR}"

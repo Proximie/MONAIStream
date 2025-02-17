@@ -2,7 +2,7 @@ import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
 
-from monaistream.streamrunners.gstreamer.utils import parse_node_entry
+from monaistream.streamrunner.gstreamer.utils import parse_node_entry
 
 
 class GstStreamRunnerSubnet:

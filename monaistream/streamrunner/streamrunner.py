@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from monaistream.streamrunners.gstreamer.backend import GstStreamRunnerBackend
+from monaistream.streamrunner.gstreamer.backend import GstStreamRunnerBackend
 
 
 

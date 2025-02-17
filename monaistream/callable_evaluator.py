@@ -32,7 +32,7 @@ else:
     EventEnum, _ = optional_import("ignite.engine", version, min_version, "EventEnum", as_type="decorator")
 
 
-__all__ = ["SingleItemDataset", "RingBufferDataset", "StreamRunner"]
+__all__ = ["SingleItemDataset", "RingBufferDataset", "CallableEvaluator"]
 
 
 class SingleItemDataset(Dataset):
@@ -72,7 +72,7 @@ class RingBufferDataset(SingleItemDataset):
             self.data[0] = self.data[0][1:] + (item,)
 
 
-class StreamRunner(SupervisedEvaluator):
+class CallableEvaluator(SupervisedEvaluator):
     """
     A simple inference engine type for applying inference to one input at a time as a callable. This is meant to be used
     for inference on per-frame video stream data where the state of the engine and other setup should be done initially
@@ -103,7 +103,7 @@ class StreamRunner(SupervisedEvaluator):
         amp_kwargs: dict | None = None,
         compile: bool = False,
         compile_kwargs: dict | None = None,
-        use_interrupt: bool = True,
+        use_interrupt: bool = False,
     ) -> None:
         super().__init__(
             device=device,

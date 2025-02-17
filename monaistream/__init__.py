@@ -14,4 +14,4 @@ __version__ = "0.0.0"
 
 from .threadsafe import *
 from .verify import *
-from .stream_runner import *
+from .callable_evaluator import *

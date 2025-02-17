@@ -46,7 +46,7 @@
         ]
     },
     "streamer": {
-        "_target_": "monaistream.StreamRunner",
+        "_target_": "monaistream.CallableEvaluator",
         "device": "@device",
         "network": "@network",
         "preprocessing": "@preprocessing",

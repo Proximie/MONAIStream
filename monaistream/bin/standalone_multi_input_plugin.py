@@ -8,6 +8,8 @@ from gi.repository import Gst, GLib, GObject, GstBase
 
 import numpy as np
 
+from monaistream.streamrunners.utils import register
+
 Gst.init()
 from monaistream.streamrunners.gstreamer_plugin import (
     GstMultiInputStreamRunner,
@@ -28,12 +30,6 @@ class MyAdaptorOp(GstMultiInputStreamRunner):
         output_data = np.array(input_data[0])
         output_data[:128, :128, :] = input_data[1]
         return output_data
-
-
-def register(runner_type, runner_alias):
-    RunnerType = GObject.type_register(runner_type)
-    if not Gst.Element.register(None, runner_alias, Gst.Rank.NONE, RunnerType):
-        raise RuntimeError(f"Failed to register {runner_alias}; you may be missing gst-python plugins")
 
 
 def run_pipeline(pipeline_descriptor):

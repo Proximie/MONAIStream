@@ -17,7 +17,7 @@ from queue import Empty, Queue
 from threading import RLock
 
 
-__all__ = ["IterableBufferDataset", "StreamSinkTransform"]
+__all__ = ["IterableBufferDataset"]
 
 
 class IterableBufferDataset(torch.utils.data.IterableDataset):

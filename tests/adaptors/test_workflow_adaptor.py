@@ -48,7 +48,7 @@ class TestIgniteEngineAdaptor(unittest.TestCase):
         ie = IgniteEngineAdaptor(e, dl)
         for i in range(10):
             result = ie(i)
-            outputs.append(result.output)
+            outputs.append(result)
 
         self.assertSequenceEqual(outputs, [i for i in range(10)])
 

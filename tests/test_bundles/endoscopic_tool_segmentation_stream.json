@@ -1,0 +1,126 @@
+{
+    "imports": [
+        "$import numpy",
+        "$import os"
+    ],
+    "bundle_root": ".",
+    "image_key": "image",
+    "device": "$torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')",
+    "network_def": {
+        "_target_": "FlexibleUNet",
+        "in_channels": 3,
+        "out_channels": 2,
+        "backbone": "efficientnet-b2",
+        "spatial_dims": 2,
+        "pretrained": false,
+        "is_pad": false,
+        "pre_conv": null
+    },
+    "network": "$@network_def.to(@device)",
+    "preprocessing": {
+        "_target_": "Compose",
+        "transforms": [
+            {
+                "_target_": "EnsureChannelFirstd",
+                "keys": "@image_key",
+                "channel_dim": 2
+            },
+            {
+                "_target_": "EnsureTyped",
+                "keys": "@image_key",
+                "dtype": "$torch.float32"
+            },
+            {
+                "_target_": "Resized",
+                "keys": "@image_key",
+                "spatial_size": [
+                    736,
+                    480
+                ],
+                "mode": [
+                    "bilinear"
+                ]
+            },
+            {
+                "_target_": "ScaleIntensityd",
+                "keys": "@image_key"
+            }
+        ]
+    },
+    "dataset": {
+        "_target_": "Dataset",
+        "data": "$[]",
+        "transform": "@preprocessing"
+    },
+    "dataloader": {
+        "_target_": "DataLoader",
+        "dataset": "@dataset",
+        "batch_size": 1,
+        "shuffle": false,
+        "num_workers": 0
+    },
+    "inferer": {
+        "_target_": "SimpleInferer"
+    },
+    "postprocessing": {
+        "_target_": "Compose",
+        "transforms": [
+            {
+                "_target_": "Invertd",
+                "keys": "pred",
+                "transform": "@preprocessing",
+                "orig_keys": "@image_key",
+                "nearest_interp": false,
+                "to_tensor": true
+            },
+            {
+                "_target_": "AsDiscreted",
+                "keys": "pred",
+                "argmax": true,
+                "to_onehot": 2
+            },
+            {
+                "_target_": "Lambdad",
+                "keys": "pred",
+                "func": "$lambda x : x[1:]"
+            },
+            {
+                "_target_": "ScaleIntensityRanged",
+                "keys": "pred",
+                "a_min": 0,
+                "a_max": 1.0,
+                "b_min": 0,
+                "b_max": 255.0,
+                "clip": true,
+                "dtype": "$numpy.uint8"
+            },
+            {
+                "_target_": "AsChannelLastd",
+                "keys": "pred"
+            }
+        ]
+    },
+    "evaluator": {
+        "_target_": "SupervisedEvaluator",
+        "device": "@device",
+        "val_data_loader": "@dataloader",
+        "network": "@network",
+        "inferer": "@inferer",
+        "postprocessing": "@postprocessing"
+    },
+    "checkpointloader": {
+        "_target_": "CheckpointLoader",
+        "load_path": "$@bundle_root + '/models/model.pt'",
+        "load_dict": {
+            "model": "@network"
+        },
+        "map_location": "@device"
+    },
+    "initialize": [
+        "$monai.utils.set_determinism(seed=123)",
+        "$@checkpointloader(@evaluator)"
+    ],
+    "run": [
+        "$@evaluator"
+    ]
+}

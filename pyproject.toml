@@ -38,3 +38,9 @@ exclude = '''
 [tool.flake8]
 line-length = 120
 
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+skip_covered = true
+include=["monaistream/**","tests/**"]

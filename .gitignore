@@ -159,3 +159,5 @@ config*.pbtxt
 *.ts
 *.pt
 *.onnx
+
+tests/test_bundles/endoscopic_tool_segmentation

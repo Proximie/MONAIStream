@@ -10,6 +10,8 @@
 # limitations under the License.
 
 
+import sys
+from typing import Callable
 from dataclasses import dataclass
 
 import gi
@@ -63,13 +65,32 @@ def create_registerable_plugin(base_type, class_name, inputs, outputs, do_op):
     return sub_class_type
 
 
+def default_message_handler(bus: Gst.Bus, message: Gst.Message, loop: GLib.MainLoop):
+    if message.type == Gst.MessageType.EOS:
+        loop.quit()
+    elif message.type == Gst.MessageType.ERROR:
+        err, debug = message.parse_error()
+        print(err, debug, file=sys.stderr)
+        loop.quit()
+    elif message.type == Gst.MessageType.WARNING:
+        err, debug = message.parse_warning()
+        print(err, debug, file=sys.stderr)
 
-def run_pipeline(pipeline):
-    pipeline.set_state(Gst.State.PLAYING)
-    print("logging pipeline graph")
-    Gst.debug_bin_to_dot_file(pipeline, Gst.DebugGraphDetails.ALL, 'pipeline_state')
+    return True
 
+
+def run_pipeline(pipeline, message_handler: Callable | None = default_message_handler):
     loop = GLib.MainLoop()
+
+    if message_handler is not None:
+        bus = pipeline.get_bus()
+        bus.add_signal_watch()
+        bus.connect("message", message_handler, loop)
+
+    pipeline.set_state(Gst.State.PLAYING)
+    # print("logging pipeline graph")
+    # Gst.debug_bin_to_dot_file(pipeline, Gst.DebugGraphDetails.ALL, 'pipeline_state')
+    
     try:
         print("running loop")
         loop.run()

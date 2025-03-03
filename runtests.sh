@@ -117,15 +117,11 @@ function clean_py() {
   TO_CLEAN="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
   echo "Removing temporary files in ${TO_CLEAN}"
 
-  rm -rf tests/data/*
-  rm -rf pytest.log
-
   find ${TO_CLEAN} -type f -name "*.py[co]" -delete
   find ${TO_CLEAN} -type f -name "*.so" -delete
   find ${TO_CLEAN} -type d -name __pycache__ -delete
   find ${TO_CLEAN} -type d -name .pytest_cache -exec rm -r "{}" +
   find ${TO_CLEAN} -type d -name .ipynb_checkpoints -exec rm -r "{}" +
-  find ${TO_CLEAN} -maxdepth 1 -type f -name ".coverage.*" -delete
 
   find ${TO_CLEAN} -depth -maxdepth 1 -type d -name ".eggs" -exec rm -r "{}" +
   find ${TO_CLEAN} -depth -maxdepth 1 -type d -name "monaistream.egg-info" -exec rm -r "{}" +
@@ -133,8 +129,8 @@ function clean_py() {
   find ${TO_CLEAN} -depth -maxdepth 1 -type d -name "dist" -exec rm -r "{}" +
   find ${TO_CLEAN} -depth -maxdepth 1 -type d -name ".mypy_cache" -exec rm -r "{}" +
   find ${TO_CLEAN} -depth -maxdepth 1 -type d -name ".pytype" -exec rm -r "{}" +
-  find ${TO_CLEAN} -depth -maxdepth 1 -type d -name ".coverage" -exec rm -r "{}" +
-  find ${TO_CLEAN} -depth -maxdepth 1 -type d -name "__pycache__" -exec rm -r "{}" +
+  find ${TO_CLEAN} -depth -maxdepth 1 -name ".coverage" -exec rm -r "{}" +
+  find ${TO_CLEAN} -depth -type d -name "__pycache__" -exec rm -r "{}" +
 }
 
 function print_error_msg() {
@@ -229,8 +225,8 @@ while [[ $# -gt 0 ]]; do
     exit 1
     ;;
   *)
-    print_error_msg "Incorrect commandline provided, invalid key: $key"
-    print_usage
+    # jump out so that further arguments are passed to subsequent calls
+    break
     ;;
   esac
   shift
@@ -383,9 +379,9 @@ if [ $doMypyFormat = true ]; then
   ${cmdPrefix}${PY_EXE} -m mypy --version
 
   if [ $doDryRun = true ]; then
-    ${cmdPrefix}MYPYPATH="$(pwd)"/src/monaistream ${PY_EXE} -m mypy "$(pwd)"
+    ${cmdPrefix}MYPYPATH="$(pwd)"/monaistream ${PY_EXE} -m mypy "$(pwd)"
   else
-    MYPYPATH="$(pwd)"/src/monaistream ${PY_EXE} -m mypy "$(pwd)" # cmdPrefix does not work with MYPYPATH
+    MYPYPATH="$(pwd)"/monaistream ${PY_EXE} -m mypy "$(pwd)" # cmdPrefix does not work with MYPYPATH
   fi
 
   mypy_status=$?
@@ -416,6 +412,6 @@ fi
 # report on coverage
 if [ $doCoverage = true ]; then
   echo "${separator}${blue}coverage${noColor}"
-  ${cmdPrefix}${PY_EXE} -m coverage combine --append .coverage/
+  # ${cmdPrefix}${PY_EXE} -m coverage combine --append .coverage/
   ${cmdPrefix}${PY_EXE} -m coverage report
 fi

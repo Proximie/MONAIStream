@@ -196,7 +196,7 @@ class GstStreamRunnerBackend(Gst.Element):
         self._do_op = do_op
 
 
-    def do_chain(self, pad, parent, buffer):
+    def do_chain(self, pad, buffer):
 
         with self._lock:
             print("=======================================")

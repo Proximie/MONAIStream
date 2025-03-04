@@ -1,7 +1,8 @@
 {
     "imports": [
         "$import numpy",
-        "$import os"
+        "$import os",
+        "$import monaistream"
     ],
     "bundle_root": ".",
     "image_key": "image",
@@ -21,44 +22,31 @@
         "_target_": "Compose",
         "transforms": [
             {
-                "_target_": "EnsureChannelFirstd",
-                "keys": "@image_key",
+                "_target_": "EnsureChannelFirst",
                 "channel_dim": 2
             },
             {
-                "_target_": "EnsureTyped",
-                "keys": "@image_key",
+                "_target_": "EnsureType",
                 "dtype": "$torch.float32"
             },
             {
-                "_target_": "Resized",
-                "keys": "@image_key",
+                "_target_": "Resize",
                 "spatial_size": [
                     736,
                     480
                 ],
-                "mode": [
-                    "bilinear"
-                ]
+                "mode": "bilinear"
             },
             {
-                "_target_": "ScaleIntensityd",
-                "keys": "@image_key"
+                "_target_": "ScaleIntensity"
             }
         ]
     },
     "dataset": {
-        "_target_": "Dataset",
-        "data": "$[]",
+        "_target_": "monaistream.datasets.gstreamer.SingleItemDataset",
         "transform": "@preprocessing"
     },
-    "dataloader": {
-        "_target_": "DataLoader",
-        "dataset": "@dataset",
-        "batch_size": 1,
-        "shuffle": false,
-        "num_workers": 0
-    },
+    "dataloader": "@dataset",
     "inferer": {
         "_target_": "SimpleInferer"
     },
@@ -103,6 +91,7 @@
     "evaluator": {
         "_target_": "SupervisedEvaluator",
         "device": "@device",
+        "epoch_length": 1,
         "val_data_loader": "@dataloader",
         "network": "@network",
         "inferer": "@inferer",

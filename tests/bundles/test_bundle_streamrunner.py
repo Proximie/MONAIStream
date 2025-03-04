@@ -8,7 +8,7 @@ from monai.bundle import ConfigWorkflow
 from parameterized import parameterized
 
 from monaistream.streamrunner.streamrunner import StreamRunner
-from monaistream.streamrunner.adaptors import IgniteEngineAdaptor
+from monaistream.streamrunner.adaptors import WorkflowEngineAdaptor
 from monaistream.streamrunner.gstreamer.subnet import GstStreamRunnerSubnet
 from monaistream.streamrunner.gstreamer.utils import run_pipeline, PadEntry, SubnetEntry
 
@@ -60,7 +60,7 @@ class TestBundleStreamRunner(unittest.TestCase):
         cw.initialize()
         (engine,) = cw.run()
 
-        adaptor = IgniteEngineAdaptor(engine)
+        adaptor = WorkflowEngineAdaptor(engine)
 
         input_configs = [PadEntry("sink_0", "video/x-raw,format=RGB")]
 

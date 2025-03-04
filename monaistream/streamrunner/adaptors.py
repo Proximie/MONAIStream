@@ -1,6 +1,6 @@
-from ignite.engine import Engine, Events
-# from monai.engines.workflow import Workflow
-
+from ignite.engine import Events
+from monai.engines.workflow import Workflow
+from monai.utils import CommonKeys
 
 class StreamingDataLoader:
     def __init__(self):
@@ -38,5 +38,23 @@ class IgniteEngineAdaptor:
         print("IgniteEngineAdaptor: __call__")
         self.data_loader.set_payload(src)
         self.engine.run(self.data_loader)
+        print("engine.state.output:", type(self.engine.state.output))
+        return self.engine.state.output
+    
+
+class WorkflowEngineAdaptor:
+
+    def __init__(self, engine:Workflow):
+        self.engine = engine
+        self.data_loader = engine.data_loader
+        self.engine.add_event_handler(Events.ITERATION_COMPLETED, self._interrupt)
+
+    def _interrupt(self):
+        self.engine.interrupt()
+
+    def __call__(self, src):
+        print("IgniteEngineAdaptor: __call__")
+        self.data_loader.set_payload(src)
+        self.engine.run()
         print("engine.state.output:", type(self.engine.state.output))
         return self.engine.state.output

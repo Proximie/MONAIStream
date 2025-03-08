@@ -9,7 +9,7 @@ import numpy as np
 
 import torch
 
-
+from monai.utils.enums import CommonKeys
 from monaistream.streamrunner.gstreamer.utils import PadEntry
 
 
@@ -251,4 +251,7 @@ class GstStreamRunnerBackend(Gst.Element):
 
 
     def _from_torch(self, data):
+        if isinstance(data, dict):
+            data=data[CommonKeys.PRED]
+            
         return data.numpy().tobytes()

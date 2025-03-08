@@ -22,15 +22,22 @@
         "_target_": "Compose",
         "transforms": [
             {
-                "_target_": "EnsureChannelFirst",
+                "_target_": "Lambda",
+                "func": "$lambda x:{@image_key: x}"
+            },
+            {
+                "_target_": "EnsureChannelFirstd",
+                "keys": "@image_key",
                 "channel_dim": 2
             },
             {
-                "_target_": "EnsureType",
+                "_target_": "EnsureTyped",
+                "keys": "@image_key",
                 "dtype": "$torch.float32"
             },
             {
-                "_target_": "Resize",
+                "_target_": "Resized",
+                "keys": "@image_key",
                 "spatial_size": [
                     736,
                     480
@@ -38,7 +45,8 @@
                 "mode": "bilinear"
             },
             {
-                "_target_": "ScaleIntensity"
+                "_target_": "ScaleIntensityd",
+                "keys": "@image_key"
             }
         ]
     },
@@ -46,7 +54,13 @@
         "_target_": "monaistream.datasets.gstreamer.SingleItemDataset",
         "transform": "@preprocessing"
     },
-    "dataloader": "@dataset",
+    "dataloader": {
+        "_target_": "DataLoader",
+        "dataset": "@dataset",
+        "batch_size": 1,
+        "shuffle": false,
+        "num_workers": 0
+    },
     "inferer": {
         "_target_": "SimpleInferer"
     },

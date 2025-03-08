@@ -60,7 +60,25 @@ class TestBundleStreamRunner(unittest.TestCase):
         cw.initialize()
         (engine,) = cw.run()
 
-        adaptor = WorkflowEngineAdaptor(engine)
+        # old_prep=engine.prepare_batch
+        # def _trace_batch(inputs,*args,**kwargs):
+            
+        #     print("INPUTS",inputs[0]["image"].shape)
+
+        #     return old_prep(inputs,*args,**kwargs)
+        #     # batches=[old_prep(i,*args,**kwargs) for i in inputs]
+        #     # inputs,labels=zip(*batches)
+
+        #     # if len(batches)==1:
+        #     #     return inputs[0], labels[0]
+        #     # else:
+        #     #     return inputs, labels
+        
+        # engine.prepare_batch=_trace_batch
+
+        # "prepare_batch": "$monaistream.streamrunner.adaptors.ListPrepareBatch()"
+
+        adaptor = WorkflowEngineAdaptor(engine,cw.dataset)
 
         input_configs = [PadEntry("sink_0", "video/x-raw,format=RGB")]
 

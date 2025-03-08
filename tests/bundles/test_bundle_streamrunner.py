@@ -87,9 +87,9 @@ class TestBundleStreamRunner(unittest.TestCase):
         subnet_inputs = [
             SubnetEntry(
                 "sink_0",
-                "videotestsrc pattern=0 num-buffers=1 ! video/x-raw,format=RGB,width=256,height=256 ! queue"
-                # f"filesrc location={self.vid_2min} num-buffers=10 ! "
-                # "qtdemux name=d d.video_0 ! decodebin ! videoconvert",
+                # "videotestsrc pattern=0 num-buffers=1 ! video/x-raw,format=RGB,width=256,height=256 ! queue"
+                f"filesrc location={self.vid_2min} num-buffers=10 ! "
+                "qtdemux name=d d.video_0 ! decodebin ! videoconvert ! queue",
             )
         ]
 

@@ -67,6 +67,7 @@ def create_registerable_plugin(base_type, class_name, inputs, outputs, do_op):
 
 def default_message_handler(bus: Gst.Bus, message: Gst.Message, loop: GLib.MainLoop):
     if message.type == Gst.MessageType.EOS:
+        print("Quitting")
         loop.quit()
     elif message.type == Gst.MessageType.ERROR:
         err, debug = message.parse_error()

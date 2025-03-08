@@ -18,18 +18,3 @@ class SingleItemDataset(Dataset):
     def set_payload(self, item):
         self.data[0] = item
 
-    # def __iter__(self):
-    #     item = self[0]
-
-    #     print("ITEM",type(item))
-    #     yield item
-
-    #     # # TODO: use standard way of adding batch dimensions, or do something specific here
-    #     # # for how groups of frames would be passed?
-    #     # if isinstance(item, torch.Tensor):
-    #     #     yield item[None]
-    #     # elif isinstance(item, Sequence):
-    #     #     yield tuple(v[None] for v in item)
-    #     # else:
-    #     #     yield {k: v[None] for k, v in item.items()}
-
